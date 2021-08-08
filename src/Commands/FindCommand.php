@@ -93,8 +93,8 @@ class FindCommand extends Command
                 $lines = $filesContent[$fileName][$languageKey] = Arr::dot($this->manager->getFileContent($filePath));
 
                 foreach ($lines as $key => $line) {
-                    if (!is_array($line) && stripos($line, $this->argument('keyword')) !== false) {
-                        $output[$fileName . '.' . $key][$languageKey] = "<bg=yellow;fg=black>{$line}</>";
+                    if (! is_array($line) && stripos($line, $this->argument('keyword')) !== false) {
+                        $output[$fileName.'.'.$key][$languageKey] = "<bg=yellow;fg=black>{$line}</>";
                     }
                 }
             }
@@ -115,7 +115,11 @@ class FindCommand extends Command
             // Sort the language values based on language name
             ksort($original);
 
-            $output[$fullKey] = array_merge(['key' => "<fg=yellow>$fullKey</>"], $original);
+            $okey = $fullKey;
+            if ($fileName == "-json") {
+                $okey = strlen($key) > 40 ? substr($key, 0, 36)." ..." : $key;
+            }
+            $output[$fullKey] = array_merge(['key' => "<fg=yellow>$okey</>"], $original);
         }
 
         return array_values($output);
